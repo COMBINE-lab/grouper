@@ -207,8 +207,8 @@ def run(keys, labelFile, juntoConfigFile, netFile, outdir):
 					temp = contigLabelsToProb[(contig, label)]
 					ofile.write(contig + "\t" + label + "\t" + str(temp) + "\n")
 					curProb += temp
-				# if (curProb < 1):
-				# 	ofile.write(contig + "\t" + "IGNORE" + "\t" + str(1-curProb) + "\n")
+				if (curProb < 1):
+					ofile.write(contig + "\t" + "IGNORE" + "\t" + str(1-curProb) + "\n")
 
 		diff = abs(sizeNewGraph - graphSize)
 		print("Size diff: {}".format(diff))
