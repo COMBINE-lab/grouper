@@ -20,19 +20,19 @@ Further, Grouper depends on the following Python packages:
 However, you should be able to install Grouper via `pip` and have these dependencies installed automatically.  To install Grouper via pip, you can use:
 
 ```
-> pip install grouper
+> pip install biogrouper
 ```
 
-You should now have a `grouper` executable in your path.  You can test this with the following command:
+You should now have a `Grouper` executable in your path.  You can test this with the following command:
 
 ```
-> grouper --help
+> Grouper --help
 ```
 
 You should see the following output:
 
 ```
-Usage: grouper [OPTIONS]
+Usage: Grouper [OPTIONS]
 
 Options:
   --config TEXT  Config file describing the experimental setup
@@ -87,7 +87,7 @@ mincut: True
 you can place this in a file called `config.yaml`.  Grouper uses [YAML](http://yaml.org/) to specify its configuration files.  The configuration file must contain the following three entries; `conditions`, `samples`, and `outdir`.  The `conditions` entry lists the conditions present in the sample. The `samples` entry is a nested dictionary of lists; there is a key corrseponding to each condition listed in the `conditions` entry, and the value associated with this key is a list of quantification directories of the samples for this condition.  Finally, the `outdir` entry specifies where the Grouper output and intermediate files should be stored.  Optionally, the `orphan` and `mincut` entries tell Grouper which extra filters to use. If these lines are not added to the config file, by default, the filters are not applied. Given the above, we can run Grouper as:
 
 ```
-> grouper --config config.yaml
+> Grouper --config config.yaml
 ```
 
 This will process the samples, generate the mapping ambiguity graph, filter it according to the conditions and the optional filter, and cluster the resuling graph (Grouper uses [MCL](http://micans.org/mcl/) internally for clustering).  Once Grouper is finished, the `human_grouper` directory should exist.  It will contain the following files:
