@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='grouper',
+setup(name='biogrouper',
       version='0.1.1',
       scripts=['bin/Grouper'],
       description='Graph-based clustering and annotation for improved de novo transcriptome analysis',
