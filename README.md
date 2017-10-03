@@ -156,6 +156,8 @@ Once again, the `mag.flat.clust` contains the computed cluster information in a 
 ## Citations:
 -------------
 
+Experiments in Graph-based Semi-Supervised Learning Methods for Class-Instance Acquisition. Partha Pratim Talukdar, Fernando Pereira, ACL 2010
+
 Differential analysis of gene regulation at transcript resolution with RNA-seq by Cole Trapnell, David G Henderickson, Martin Savageau, Loyal Goff, John L Rinn and Lior Pachter, Nature Biotechnology 31, 46–53 (2013).
 
 Stijn van Dongen. Graph Clustering by Flow Simulation. PhD thesis, University of Utrecht, 2000
