@@ -13,9 +13,10 @@ setup(name='biogrouper',
           'PyYAML',
           'coloredlogs',
           'click',
-          'networkx',
+          'networkx==1.11',
           'numpy',
           'pandas',
           'tqdm'
+          'statistics'
       ],
       zip_safe=False)
