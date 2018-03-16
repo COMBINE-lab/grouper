@@ -17,7 +17,7 @@ setup(name='biogrouper',
           'networkx==1.11',
           'numpy',
           'pandas',
-          'tqdm'
+          'tqdm',
           'statistics'
       ],
       zip_safe=False)
