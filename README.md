@@ -8,7 +8,12 @@ Grouper is a tool for clustering and annotating contigs from *de novo* transcrip
 
 The clustering module of Grouper depends on the [MCL](http://micans.org/mcl/) clustering tool (to be available in the environment where it runs).
 
-Similarly, the labeling module depends on the [Junto](https://github.com/parthatalukdar/junto) library for label propagation (to be available in the environment where it runs).
+Similarly, the labeling module depends on the [Junto](https://github.com/parthatalukdar/junto) library for label propagation (to be available in the environment where it runs). This will require the relevant Java version. You can add this by cloning the repository and running the following commands:
+
+```
+export JUNTO_DIR=<path to junto folder>
+export PATH="$PATH:$JUNTO_DIR/bin"
+```
 
 Further, Grouper depends on the following Python packages:
   
@@ -16,8 +21,9 @@ Further, Grouper depends on the following Python packages:
   2. [PyYAML](https://pypi.python.org/pypi/PyYAML)
   3. [Pandas](http://pandas.pydata.org/)
   4. [NumPy](http://www.numpy.org/)
+  5. [Networkx v1.11](https://networkx.github.io/)
 
-However, you should be able to install Grouper via `pip` and have these dependencies installed automatically.  To install Grouper via pip, you can use:
+However, you should be able to install Grouper via `pip` and have these python dependencies installed automatically.  To install Grouper via pip, you can use:
 
 ```
 > pip install biogrouper

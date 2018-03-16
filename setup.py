@@ -1,7 +1,8 @@
 from setuptools import setup
 
 setup(name='biogrouper',
-      version='0.1.2',
+      python_requires="<3.0",
+      version='0.1.3',
       scripts=['bin/Grouper'],
       description='Graph-based clustering and annotation for improved de novo transcriptome analysis',
       url='https://github.com/COMBINE-lab/Grouper',
@@ -16,7 +17,7 @@ setup(name='biogrouper',
           'networkx==1.11',
           'numpy',
           'pandas',
-          'tqdm'
+          'tqdm',
           'statistics'
       ],
       zip_safe=False)
