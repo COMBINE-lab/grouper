@@ -1,10 +1,9 @@
 # Grouper 
-============
 
 Grouper is a tool for clustering and annotating contigs from *de novo* transcriptome assemblies.  There are two main modules in Grouper: the clustering module and the labeling module.  The former is based on the tool, [RapClust](https://github.com/COMBINE-lab/RapClust), and is designed to be run downstream of the [Sailfish](https://github.com/kingsfordgroup/sailfish) or [Salmon](https://github.com/COMBINE-lab/salmon) tools for rapid transcript-level quantification.  It relies on the *fragment equivalence classes*, orphaned read mappings and quantification information computed by these tools in order to determine how contigs in the assembly are potentially related and cluster them accordingly.  The labeling module in Grouper is able to incorporate information from annotated genomes of closely related species to annotate contigs in the *de novo* assembly.  Hence, the different modules of Grouper are able to efficiently utilize information from multiple sources to accurately cluster and annotate contigs from transcriptome assemblies. 
 
 ## Dependencies
-----------------
+
 
 The clustering module of Grouper depends on the [MCL](http://micans.org/mcl/) clustering tool (to be available in the environment where it runs).
 
@@ -45,10 +44,13 @@ Options:
   --help         Show this message and exit.
 ```
 
-## Using Grouper
------------------
+### Notes on Grouper options
 
-Grouper is written in Python, is easy to use.  Below, we explain how to use it with Salmon.  There are two main steps involved in running Grouper:
+Grouper provides flags to enable certain features that may improve the accuracy of clustering.  Specifically, one can use information from orphaned reads to link contigs prior to clustering (setting `orphan` to true in the YAML file), and can apply a min cut filter to force the clustering module to separate certain contigs based on their expression statistics across conditions.  It is not the case, however, that applying these features always improves the accuracy of Grouper.  While there is no single simple rule that one can follow to decide if one or both of these options should be applied, we observed the following when testing Grouper on a wide range of data.  The more complete and accurate the assembly, the less useful these features tend to be.  Hence, if your assembly is of high quality (as evalutated by e.g. [Transrate](http://hibberdlab.com/transrate/) or [Detonate](http://deweylab.biostat.wisc.edu/detonate/)), then you may wish to run Grouper without these flags enabled, as it may yield superior performance.  However, if your assembly is of lower quality, and contains many orphaned reads, then you may wish to enable these flags.  We are exploring a more thorough methodology for determining which set of options is optimal for a given data set, and will update this documentation as we determine more concrete recommendations. 
+
+## Using Grouper
+
+Grouper is written in Python and is easy to use.  Below, we explain how to use it with Salmon.  There are two main steps involved in running Grouper:
 
   1. Run Salmon on each sample in your experiment, passing it the `--dumpEq` option.  This will tell Salmon to dump a representation of the fragment equivalence classes that it computed during quasi-mapping of each sample.  If you wish to use orphan read information for joining contigs in Grouper, use the `--writeOrphanLinks` option as well, which will dump orphan read pair information to a file.  Apart from these additional option, Salmon should be run normally (i.e. passing in whatever other options are appropriate for your samples).  
   2. Run Grouper, providing it with a configuration file that describes the experimental setup of your samples, and where the Salmon quantification results have been written. You can also choose whether or not to use the additional filters and the labeling module in Grouper.
