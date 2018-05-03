@@ -2,10 +2,17 @@
 
 Grouper is a tool for clustering and annotating contigs from *de novo* transcriptome assemblies.  There are two main modules in Grouper: the clustering module and the labeling module.  The former is based on the tool, [RapClust](https://github.com/COMBINE-lab/RapClust), and is designed to be run downstream of the [Sailfish](https://github.com/kingsfordgroup/sailfish) or [Salmon](https://github.com/COMBINE-lab/salmon) tools for rapid transcript-level quantification.  It relies on the *fragment equivalence classes*, orphaned read mappings and quantification information computed by these tools in order to determine how contigs in the assembly are potentially related and cluster them accordingly.  The labeling module in Grouper is able to incorporate information from annotated genomes of closely related species to annotate contigs in the *de novo* assembly.  Hence, the different modules of Grouper are able to efficiently utilize information from multiple sources to accurately cluster and annotate contigs from transcriptome assemblies. 
 
-## Dependencies
+## Docker Image
 
+A Docker image for [Grouper](https://hub.docker.com/r/combinelab/grouper/) can be downloaded from DockerHub using:
 
-The clustering module of Grouper depends on the [MCL](http://micans.org/mcl/) clustering tool (to be available in the environment where it runs).
+```
+docker pull combinelab/grouper
+```
+
+## Dependencies 
+
+To run Grouper using the source code, several dependencies need to be installed. The clustering module of Grouper depends on the [MCL](http://micans.org/mcl/) clustering tool (to be available in the environment where it runs).
 
 Similarly, the labeling module depends on the [Junto](https://github.com/parthatalukdar/junto) library for label propagation (to be available in the environment where it runs). This will require the relevant Java version. You can add this by cloning the repository and running the following commands:
 
