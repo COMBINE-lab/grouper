@@ -5,13 +5,16 @@ import pandas as pd
 import numpy as np
 import os
 import logging
+import json
 import networkx as nx
 import math
 from tqdm import tqdm
 
-def buildNetFile(sampdirs, netfile, cutoff, auxDir, writecomponents=False):
+def buildNetFile(sampdirs, netfile, cutoff, auxDir, status_file,writecomponents=False):
+    
+   
+    
     logger = logging.getLogger("grouper")
-
     sep = os.path.sep
     sffiles = [sep.join([sd, 'quant.sf']) for sd in sampdirs]
     eqfiles = [sep.join([sd, auxDir, '/eq_classes.txt']) for sd in sampdirs]
@@ -72,9 +75,8 @@ def buildNetFile(sampdirs, netfile, cutoff, auxDir, writecomponents=False):
                         weightDict[key] = w
                 for t in tids:
                     diagCounts[t] += count * (tpm[t] / denom)
+                    firstSamp = False
                     ambigCounts[t] += count
-            firstSamp = False
-
     lens = quant.loc[tnames, 'Length'].values
 
     maxWeight = 0.0
@@ -131,10 +133,20 @@ def buildNetFile(sampdirs, netfile, cutoff, auxDir, writecomponents=False):
     if G is not None:
         clustFile = netfile.split('.net')[0] + '.clust'
         print("Writing connected components as clusters to {}".format(clustFile))
+   
         with open(clustFile, 'w') as ofile:
             cc = nx.connected_component_subgraphs(G)
             for c in cc:
                 ofile.write('{}\n'.format('\t'.join(c.nodes())))
+    
+    print("started status_file")
+    dict_ = {"eqnet.buildNetFile" : True}
+    with open(status_file, 'r') as temp:
+        data = json.load(temp)
+    data.update(dict_)
+    with open(status_file, 'w') as temp:
+        json.dump(data, temp)
+    print("updated status_file")
 
 def writeEdgeList(weightDict, tnames, ofile, G):
     useGraph = G is not None
@@ -217,7 +229,7 @@ def flattenClusters(infile, outfile):
                 for t in toks:
                     ofile.write("{}\t{}\n".format(cname, t))
 
-def filterGraph(expDict, netfile, outfile, auxDir, mincut):
+def filterGraph(expDict, netfile, outfile, auxDir, mincut, status_file):
     logger = logging.getLogger("grouper")
     # Get just the set of condition names
     conditions = expDict.keys()
@@ -299,11 +311,17 @@ def filterGraph(expDict, netfile, outfile, auxDir, mincut):
         G.remove_edges_from(list(cutset))
         for e in G.edges(data = "capacity"):
             ofile.write(e[0] + "\t" + e[1] + "\t" + str(e[2]) + "\n")
+        dict_ = {"eqnet.filterGraph": True}
+        with open(status_file, 'r') as temp:
+            data = json.load(temp)
+        data.update(dict_)
+        with open(status_file, 'w') as temp:
+            json.dump(data, temp)
 
     logging.info("Trimmed {} edges".format(numTrimmed))
     logging.info("Cut performed on {} edges".format(numCut))
 
-def addOrphanLinks(sampdirs, auxDir, orphanFileName, cutoff, netFileIn, netFileOut):
+def addOrphanLinks(sampdirs, auxDir, orphanFileName, cutoff, netFileIn, netFileOut, status_file):
     logger = logging.getLogger("grouper")
 
     sep = os.path.sep
@@ -427,7 +445,7 @@ def addOrphanLinks(sampdirs, auxDir, orphanFileName, cutoff, netFileIn, netFileO
                 weightDict[key] = 1.0 / min(a0, a1)
             else:
                 weightDict[key] += 1.0 / min(a0, a1)
-                
+
     logging.info("Added {} orphan link edges".format(numOrphanLinks))
 
     with open(netFileIn, 'r') as ifile, open(netFileOut, 'w') as ofile:
@@ -435,5 +453,10 @@ def addOrphanLinks(sampdirs, auxDir, orphanFileName, cutoff, netFileIn, netFileO
             ofile.write(line)
         for k,v in weightDict.items():
             ofile.write("{}\t{}\t{}\n".format(tnames[k[0]], tnames[k[1]], v))
-
+    dict_ = {"eqnet.addOrphanLinks": True}
+    with open(status_file, 'r') as temp:
+        data = json.load(temp)
+    data.update(dict_)
+    with open(status_file, 'w') as temp:
+        json.dump(data, temp)
     return weightDict;
