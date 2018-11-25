@@ -51,7 +51,7 @@ def processQuant(config):
     #print status_file
     if not os.path.isfile(status_file):
         print("sdffffffffffffffffffffffffffff")
-        steps=["eqnet.buildNetFile", "eqnet.addOrphanLinks", "eqnet.filterGraph"]
+        steps=["eqnet.buildNetFile", "eqnet.addOrphanLinks", "eqnet.filterGraph", "eqnet.flattenClusters"]
         #steps = ["eqnet.buildNetFile"]
         with open(status_file, "w") as status_filp:
             data = {}
@@ -236,7 +236,8 @@ def processQuant(config):
 
     # Flatten both cluster files
     flatClustFile = os.path.sep.join([outdir, "mag.flat.clust"])
-    eqnet.flattenClusters(clustFile, flatClustFile)
+    if not data["eqnet.flattenClusters"]:
+        eqnet.flattenClusters(clustFile, flatClustFile, status_file)
 
     # Summarize both cluster files
     summaryFile = os.path.sep.join([outdir, "stats.json"])

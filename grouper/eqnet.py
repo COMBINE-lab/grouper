@@ -10,6 +10,14 @@ import networkx as nx
 import math
 from tqdm import tqdm
 
+def updateStatusFile(status_file, key):
+    dict_ = {key: True}
+    with open(status_file, 'r') as temp:
+        data = json.load(temp)
+    data.update(dict_)
+    with open(status_file, 'w') as temp:
+        json.dump(data, temp)
+
 def buildNetFile(sampdirs, netfile, cutoff, auxDir, status_file,writecomponents=False):
     
    
@@ -139,7 +147,9 @@ def buildNetFile(sampdirs, netfile, cutoff, auxDir, status_file,writecomponents=
             for c in cc:
                 ofile.write('{}\n'.format('\t'.join(c.nodes())))
     
-    print("started status_file")
+    #print("started status_file")
+    updateStatusFile(status_file, "eqnet.buildNetFile")
+    '''
     dict_ = {"eqnet.buildNetFile" : True}
     with open(status_file, 'r') as temp:
         data = json.load(temp)
@@ -147,6 +157,7 @@ def buildNetFile(sampdirs, netfile, cutoff, auxDir, status_file,writecomponents=
     with open(status_file, 'w') as temp:
         json.dump(data, temp)
     print("updated status_file")
+    '''
 
 def writeEdgeList(weightDict, tnames, ofile, G):
     useGraph = G is not None
@@ -220,7 +231,7 @@ def getCountsFromEquiv(eqCollection):
             countDict[t] = 1.0
     return countDict
 
-def flattenClusters(infile, outfile):
+def flattenClusters(infile, outfile, status_file):
     with open(outfile, 'w') as ofile:
         with open(infile) as ifile:
             for i,l in enumerate(ifile):
@@ -228,6 +239,7 @@ def flattenClusters(infile, outfile):
                 cname = "cluster{}".format(i)
                 for t in toks:
                     ofile.write("{}\t{}\n".format(cname, t))
+    updateStatusFile(status_file, "eqnet.flattenClusters")
 
 def filterGraph(expDict, netfile, outfile, auxDir, mincut, status_file):
     logger = logging.getLogger("grouper")
@@ -311,12 +323,16 @@ def filterGraph(expDict, netfile, outfile, auxDir, mincut, status_file):
         G.remove_edges_from(list(cutset))
         for e in G.edges(data = "capacity"):
             ofile.write(e[0] + "\t" + e[1] + "\t" + str(e[2]) + "\n")
+
+        updateStatusFile(status_file, "eqnet.filterGraph")
+        '''
         dict_ = {"eqnet.filterGraph": True}
         with open(status_file, 'r') as temp:
             data = json.load(temp)
         data.update(dict_)
         with open(status_file, 'w') as temp:
             json.dump(data, temp)
+        '''
 
     logging.info("Trimmed {} edges".format(numTrimmed))
     logging.info("Cut performed on {} edges".format(numCut))
@@ -453,10 +469,5 @@ def addOrphanLinks(sampdirs, auxDir, orphanFileName, cutoff, netFileIn, netFileO
             ofile.write(line)
         for k,v in weightDict.items():
             ofile.write("{}\t{}\t{}\n".format(tnames[k[0]], tnames[k[1]], v))
-    dict_ = {"eqnet.addOrphanLinks": True}
-    with open(status_file, 'r') as temp:
-        data = json.load(temp)
-    data.update(dict_)
-    with open(status_file, 'w') as temp:
-        json.dump(data, temp)
+    updateStatusFile(status_file, "eqnet.addOrphanLinks")
     return weightDict;
