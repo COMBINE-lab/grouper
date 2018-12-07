@@ -147,17 +147,7 @@ def buildNetFile(sampdirs, netfile, cutoff, auxDir, status_file,writecomponents=
             for c in cc:
                 ofile.write('{}\n'.format('\t'.join(c.nodes())))
     
-    #print("started status_file")
     updateStatusFile(status_file, "eqnet.buildNetFile")
-    '''
-    dict_ = {"eqnet.buildNetFile" : True}
-    with open(status_file, 'r') as temp:
-        data = json.load(temp)
-    data.update(dict_)
-    with open(status_file, 'w') as temp:
-        json.dump(data, temp)
-    print("updated status_file")
-    '''
 
 def writeEdgeList(weightDict, tnames, ofile, G):
     useGraph = G is not None
@@ -325,14 +315,6 @@ def filterGraph(expDict, netfile, outfile, auxDir, mincut, status_file):
             ofile.write(e[0] + "\t" + e[1] + "\t" + str(e[2]) + "\n")
 
         updateStatusFile(status_file, "eqnet.filterGraph")
-        '''
-        dict_ = {"eqnet.filterGraph": True}
-        with open(status_file, 'r') as temp:
-            data = json.load(temp)
-        data.update(dict_)
-        with open(status_file, 'w') as temp:
-            json.dump(data, temp)
-        '''
 
     logging.info("Trimmed {} edges".format(numTrimmed))
     logging.info("Cut performed on {} edges".format(numCut))

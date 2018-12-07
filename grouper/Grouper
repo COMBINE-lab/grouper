@@ -48,23 +48,15 @@ def processQuant(config):
 
     outdir = cfg['outdir']
     status_file = os.path.sep.join([outdir, 'status.json']);
-    #print status_file
     if not os.path.isfile(status_file):
-        print("sdffffffffffffffffffffffffffff")
         steps=["eqnet.buildNetFile", "eqnet.addOrphanLinks", "eqnet.filterGraph", "eqnet.flattenClusters"]
-        #steps = ["eqnet.buildNetFile"]
         with open(status_file, "w") as status_filp:
             data = {}
             for step in steps:
-                #data={}
                 data[step] = False
-                #print(data)
             json.dump(data, status_filp)
-                #print(data)
     with open(status_file, "r") as status_filp:
         data = json.load(status_filp)
-        print("data : ", data)
-    print("jrere")
     if os.path.exists(outdir):
         if not os.path.isdir(outdir):
             logging.critical("The output directory already exists, and is not a directory!")
@@ -139,11 +131,12 @@ def processQuant(config):
         data = json.load(status_filep)
 
         if not data["eqnet.buildNetFile"] :
-            #netFile = os.path.sep.join([outdir, "mag.net"])
 
             logging.info("Building multiple alignment graph")
             
             eqnet.buildNetFile(sampleDirs, netFile, cutoff, auxDir, status_file)
+        else:
+            logging.warning("Building multiple alignment graph - Using already created multiple alignment graph file at " + netFile)
     #sys.exit(1);
     # add orphans before filter step
     if orphan:
@@ -151,8 +144,9 @@ def processQuant(config):
         orphanNetFile = os.path.sep.join([outdir, "mag.orphan.net"])
         if not data["eqnet.addOrphanLinks"]:
             logging.info("Adding information from orphans")
-            #orphanNetFile = os.path.sep.join([outdir, "mag.orphan.net"])
             eqnet.addOrphanLinks(sampleDirs, auxDir, '/orphan_links.txt', cutoff, netFile, orphanNetFile, status_file)
+        else:
+            logging.warning("Adding Information from orphans - Using already created file for orphan information at "+ orphanNetFile)
     else:
         orphanNetFile = netFile
 
@@ -160,8 +154,9 @@ def processQuant(config):
     filtNetFile = os.path.sep.join([outdir, "mag.filt.net"])
     if not data["eqnet.filterGraph"]:
         logging.info("Filtering multiple alignment graph")
-        #filtNetFile = os.path.sep.join([outdir, "mag.filt.net"])
         eqnet.filterGraph(conditionDict, orphanNetFile, filtNetFile, auxDir, mincut, status_file)
+    else:
+        logging.warning("Filtering the multiple alignment graph - Using already created file at " + filtNetFile)
 
     # If labeling module is run, do this
     if labeling:
@@ -238,6 +233,8 @@ def processQuant(config):
     flatClustFile = os.path.sep.join([outdir, "mag.flat.clust"])
     if not data["eqnet.flattenClusters"]:
         eqnet.flattenClusters(clustFile, flatClustFile, status_file)
+    else:
+        logging.warning("Using already created file for flattened cluster files at " + flatClustFile)
 
     # Summarize both cluster files
     summaryFile = os.path.sep.join([outdir, "stats.json"])
